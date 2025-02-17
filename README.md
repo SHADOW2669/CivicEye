@@ -26,7 +26,7 @@ CivicEye is an innovative software designed to detect and monitor traffic violat
 ## **Software Workflow**
 1. **User Setup:**
    - Download the software from the official GitHub repository.
-   - Configure the CCTV feed by entering the RTSP URL in the provided `config.json` file.
+   - Configure the CCTV feed by entering the RTSP URL in the provided `config.json` file. [Ongoing Implementation]
    - Install system dependencies:
      ```bash
      sudo apt update
@@ -60,7 +60,112 @@ CivicEye is an innovative software designed to detect and monitor traffic violat
 
 ---
 
+## **Technical Specifications** [May be revised as the project advances]
+### **Development Requirements**
+#### **Programming Language**
+- **Python 3.8+**: Python is a versatile programming language with robust libraries for machine learning, computer vision, and web development. Version 3.8+ ensures compatibility with modern frameworks and libraries.
 
+#### **Libraries**
+1. **OpenCV**:
+   - OpenCV is an open-source library used for real-time computer vision tasks.
+   - In this project, it facilitates video streaming from CCTV cameras, frame extraction, and pre-processing for YOLOv3 input.
+   - Example Usage:
+     - Streaming a CCTV feed via RTSP.
+     - Resizing frames for model input.
+     - Displaying video feeds with bounding boxes.
+     ```python
+     import cv2
+     cap = cv2.VideoCapture("rtsp://username:password@camera_ip:port")
+     ret, frame = cap.read()
+     cv2.imshow("Frame", frame)
+     ```
+
+2. **PyTorch**:
+   - PyTorch is a machine learning framework used to implement and run YOLOv3.
+   - It is used to load the pre-trained YOLOv3 model, process frames, and perform object detection.
+   - Example Usage:
+     - Loading YOLOv3 weights and configurations.
+     - Running inference on video frames to detect objects.
+     ```python
+     import torch
+     model = torch.hub.load('ultralytics/yolov5', 'yolov3')
+     results = model(frame)
+     ```
+
+3. **Requests**:
+   - Requests is a Python library for making HTTP requests.
+   - It is used to send violation data (images and metadata) to the centralized server via REST APIs.
+   - Example Usage:
+     - Sending a POST request with violation details and images.
+     ```python
+     import requests
+     data = {"violation_type": "No Helmet", "timestamp": "2025-02-15T10:30:00Z"}
+     response = requests.post("https://your-server.com/api/violations", json=data)
+     ```
+
+4. **SQLite**:
+   - SQLite is a lightweight, file-based database used for local storage of violation data.
+   - It allows the software to temporarily store detected violations and metadata locally before sending them to the server.
+   - Example Usage:
+     - Creating a database to store violation logs.
+     - Querying data for local analysis or debugging.
+     ```python
+     import sqlite3
+     conn = sqlite3.connect("violations.db")
+     cursor = conn.cursor()
+     cursor.execute("CREATE TABLE IF NOT EXISTS Violations (id INTEGER PRIMARY KEY, timestamp TEXT, violation_type TEXT)")
+     ```
+
+### **Hardware Requirements**
+#### For Clients:
+- **Processor:** Intel i3 or higher
+- **RAM:** 4GB (8GB recommended)
+- **GPU:** Optional (YOLOv3-tiny can run on CPU)
+- **Storage:** 20GB free disk space
+
+#### For Centralized Server:
+- **Processor:** 16-core CPU (e.g., Intel Xeon)
+- **RAM:** 32GB
+- **GPU:** NVIDIA Tesla T4 or equivalent
+- **Storage:** 1TB SSD for video and metadata storage
+
+---
+
+Here’s your updated **Setup Instructions**:
+
+---
+
+## **Setup Instructions**  
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/your-repo/CivicEye.git
+   ```
+2. Navigate to the project directory:  
+   ```bash
+   cd CivicEye
+   ```
+3. Install system dependencies:  
+   ```bash
+   sudo apt update
+   sudo apt install python3
+   sudo apt install python3-venv
+   ```
+4. Set up a virtual environment:  
+   ```bash
+   python3 -m venv myenv
+   source myenv/bin/activate  # For Linux/macOS
+   ```
+5. Install required Python packages:  
+   ```bash
+   pip install cvzone
+   pip install ultralytics
+   ```
+6. Update the `config.json` file with your CCTV RTSP URL and other preferences.  [Ongoing Implementation]
+
+7. Start the detection software:  
+   ```bash
+   python3 helmet_detection_video.py
+   ```
 
 ---
 
