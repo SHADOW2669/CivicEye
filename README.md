@@ -131,10 +131,6 @@ CivicEye is an innovative software designed to detect and monitor traffic violat
 
 ---
 
-Here’s your updated **Setup Instructions**:
-
----
-
 ## **Setup Instructions**  
 1. Clone the repository:  
    ```bash
