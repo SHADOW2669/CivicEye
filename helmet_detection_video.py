@@ -5,7 +5,7 @@ import os
 from ultralytics import YOLO
 
 # Initialize video capture
-video_path = "Media/test_vid2.mp4"
+video_path = "Media/name.mp4"
 cap = cv2.VideoCapture(video_path)
 
 # Load YOLO model with custom weights
@@ -15,7 +15,7 @@ model = YOLO("Weights/best.pt")
 classNames = ['With Helmet', 'Without Helmet']
 
 # Directory to store detected images
-save_dir = "/home/shadow269/VC_CODE/CivicEye/Detects"
+save_dir = "floder location"
 os.makedirs(save_dir, exist_ok=True)
 
 violating_bikes = {}  # Dictionary to track detected bikes
