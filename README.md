@@ -49,7 +49,7 @@ CivicEye is an innovative software designed to detect and monitor traffic violat
      ```
 
 2. **Violation Detection:**
-   - The software streams the CCTV feed locally and processes video frames using YOLOv3.
+   - The software streams the CCTV feed locally and processes video frames using YOLOv8.
    - Detected violations are logged, and images with bounding boxes are saved.
 
 3. **Data Transmission:**
@@ -68,7 +68,7 @@ CivicEye is an innovative software designed to detect and monitor traffic violat
 #### **Libraries**
 1. **OpenCV**:
    - OpenCV is an open-source library used for real-time computer vision tasks.
-   - In this project, it facilitates video streaming from CCTV cameras, frame extraction, and pre-processing for YOLOv3 input.
+   - In this project, it facilitates video streaming from CCTV cameras, frame extraction, and pre-processing for YOLOv8 input.
    - Example Usage:
      - Streaming a CCTV feed via RTSP.
      - Resizing frames for model input.
@@ -81,14 +81,14 @@ CivicEye is an innovative software designed to detect and monitor traffic violat
      ```
 
 2. **PyTorch**:
-   - PyTorch is a machine learning framework used to implement and run YOLOv3.
-   - It is used to load the pre-trained YOLOv3 model, process frames, and perform object detection.
+   - PyTorch is a machine learning framework used to implement and run YOLOv8.
+   - It is used to load the pre-trained YOLOv8 model, process frames, and perform object detection.
    - Example Usage:
-     - Loading YOLOv3 weights and configurations.
+     - Loading YOLOv8 weights and configurations.
      - Running inference on video frames to detect objects.
      ```python
      import torch
-     model = torch.hub.load('ultralytics/yolov5', 'yolov3')
+     model = torch.hub.load('ultralytics/yolov8', 'yolov8')
      results = model(frame)
      ```
 
