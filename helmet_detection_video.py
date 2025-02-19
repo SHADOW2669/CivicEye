@@ -4,9 +4,12 @@ import cvzone
 import os
 from ultralytics import YOLO
 
-# Initialize video capture
-video_path = "Media/name.mp4"
-cap = cv2.VideoCapture(video_path)
+# Ask user for media input
+media_input = input("Enter video file path or press Enter to use the default camera: ").strip()
+if media_input == "":
+    cap = cv2.VideoCapture(0)  # Use default camera
+else:
+    cap = cv2.VideoCapture(media_input)  # Use provided video file
 
 # Load YOLO model with custom weights
 model = YOLO("Weights/best.pt")
@@ -15,17 +18,16 @@ model = YOLO("Weights/best.pt")
 classNames = ['With Helmet', 'Without Helmet']
 
 # Directory to store detected images
-save_dir = "floder location"
+save_dir = "Detects"
 os.makedirs(save_dir, exist_ok=True)
 
 violating_bikes = {}  # Dictionary to track detected bikes
-
 frame_count = 0  # Counter to track frames
 
 while True:
     success, img = cap.read()
     if not success:
-        break  # Stop if video ends
+        break  # Stop if video ends or camera fails
 
     results = model(img, stream=True)
     detected_violations = False  # Flag to track violations in the frame
@@ -48,7 +50,6 @@ while True:
     # Save the full image only once per bike with violation
     if detected_violations:
         img_id = f"violation_{frame_count}.jpg"
-
         if img_id not in violating_bikes:  # Ensure only one image per bike
             filename = os.path.join(save_dir, img_id)
             cv2.imwrite(filename, img)
