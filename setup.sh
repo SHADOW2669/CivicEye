@@ -5,7 +5,7 @@ set -e
 
 echo "Updating system packages..."
 sudo apt update
-sudo apt install -y python3 python3-venv
+sudo apt install -y python3 python3-venv python3-tk
 
 echo "Creating virtual environment..."
 python3 -m venv myenv
