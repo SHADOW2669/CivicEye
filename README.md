@@ -1,46 +1,35 @@
-# **CivicEye: Traffic Violation Detection Software**
+# **CivicEye: Traffic Violation Detection Software (Windows)**
 
 ## **Introduction**
-CivicEye is an AI-powered software that enables users to detect and monitor traffic violations using home-based CCTV cameras. By leveraging advanced object detection techniques, it identifies violations such as riding without helmets in real-time and processes them locally on the user's machine.
+CivicEye is an AI-powered software designed to detect and monitor traffic violations using CCTV cameras. Utilizing YOLOv8 for object detection, it identifies helmet violations in real time and processes them locally on the user's machine.
 
 ---
 
 ## **Key Features**
-- **Real-Time Violation Detection**: Detects traffic violations such as "No Helmet" using YOLOv8.
-- **Local Processing**: Runs directly on the user's machine, ensuring privacy and reducing server costs.
-- **Automated Image Capture**: Captures images of violations and stores them in a local directory.
-- **Flexible Video Input**: Users can either provide a pre-recorded video file or use the default webcam for real-time detection.
-- **Secure Login System**: Requires authentication before accessing the detection system.
+- **Real-Time Violation Detection**: Detects traffic violations like "No Helmet" using YOLOv8.
+- **Local Processing**: Runs directly on the user's machine, ensuring privacy and eliminating cloud dependencies.
+- **Automated Image Capture**: Captures images of detected violations and stores them locally.
+- **Flexible Video Input**: Supports both pre-recorded videos and real-time webcam feeds.
+- **Secure Login System**: Users must authenticate before accessing detection features.
+- **Graphical User Interface (GUI)**: Simplified and user-friendly interface for easy interaction.
 
 ---
 
 ## **Installation Guide**
 ### **System Requirements**
 #### **Client Machine:**
-- **OS:** Linux (debian Linux-only)
+- **OS:** Windows 10 or later
 - **Processor:** Intel i3 or higher
 - **RAM:** 4GB (8GB recommended)
 - **Storage:** 20GB free disk space
 
 ### **Setup Instructions**
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/your-repo/CivicEye.git
-   ```
-2. **Navigate to the Project Directory:**
-   ```bash
-   cd CivicEye
-   ```
-3. **Run the Setup Script:**
-   ```bash
-   chmod +x setup_civiceye.sh
-   ./setup_civiceye.sh
-   ```
-4. **Run the Software:**
-   ```bash
-   chmod +x run.sh
-   ./run.sh
-   ```
+1. **Download the Latest Release:**
+   - Get the Windows installer from the [CivicEye Releases](https://github.com/SHADOW2669/CivicEye/releases).
+2. **Run the Setup Script:**
+   - Double-click `setup_civiceye.bat` to install dependencies and set up the virtual environment.
+3. **Launch the Software:**
+   - Use `run.bat` to start the detection software.
 
 ---
 
@@ -54,10 +43,9 @@ CivicEye is an AI-powered software that enables users to detect and monitor traf
    - Users can provide a pre-recorded video file or press Enter to use the default webcam.
 3. **Violation Detection**:
    - YOLOv8 processes video frames and detects violations such as "Without Helmet".
-   - Bounding boxes and labels are drawn on detected violations.
+   - Bounding boxes and labels are displayed on detected violations.
 4. **Data Storage**:
    - Captured images of violations are stored in the `Detects` folder.
-   - The software ensures that each violation is saved only once per frame.
 5. **Real-Time Monitoring**:
    - Video feed is displayed with detection overlays.
    - Users can exit the application by pressing 'q'.
@@ -85,18 +73,18 @@ CivicEye is an AI-powered software that enables users to detect and monitor traf
 
 ---
 
-## **Version 1.2 Release Notes**
-- **Updated Setup Script**: Now supports multiple Linux distributions (Ubuntu, Debian, Arch, Fedora).
-- **Refined Run Script**: A dedicated `run.sh` file for easy execution.
-- **Improved Detection Workflow**: Enhancements in violation tracking and image storage.
-- **Flexible Video Input**: Users can either provide a video file or use the default webcam.
-- **Secure Login System**: Users must authenticate before accessing detection features.
-- **Local Processing**: All detection and processing occur on the client machine.
-- **Basic Website**: Provides installation and usage information.
+## **Version 2.0 Release Notes**
+- **Added Windows Support**: Fully functional Windows version with `.bat` setup and execution scripts.
+- **Graphical User Interface (GUI)**: Improved user experience with a more intuitive interface.
+- **Refined Detection System**: Enhanced violation tracking and image storage.
+- **Secure Login System**: Mandatory authentication for access control.
+- **Local Processing**: Ensures all detection tasks remain on the user's device.
 
 ---
 
 ## **Future Enhancements (Planned for Future Versions)**
+- Add an executable (.exe) file for easier installation on Windows.
+- Improve the graphical user interface (GUI) for a better user experience.*
 1. Implement centralized reporting to a web server.
 2. Expand violation detection to include "Triple Riding" and other infractions.
 3. Optimize the YOLO model for region-specific traffic conditions.
