@@ -1,7 +1,8 @@
-#!/bin/bash
+@echo off
+echo Activating virtual environment...
+call myenv\Scripts\activate
 
-# Activate the virtual environment
-source myenv/bin/activate
+echo Running the helmet detection program...
+python civiceye.py
 
-# Run the helmet detection program
-python3 civiceye.py
+pause
