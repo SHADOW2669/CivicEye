@@ -46,7 +46,7 @@ CivicEye is an AI-powered software that enables users to detect and monitor traf
    ```
 6. **Run the Detection Software:**
    ```bash
-   python3 helmet_detection_video.py
+   python3 civiceye.py
    ```
 
 ---
