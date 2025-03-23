@@ -9,14 +9,14 @@ CivicEye is an AI-powered software that enables users to detect and monitor traf
 - **Real-Time Violation Detection**: Detects traffic violations such as "No Helmet" using YOLOv8.
 - **Local Processing**: Runs directly on the user's machine, ensuring privacy and reducing server costs.
 - **Automated Image Capture**: Captures images of violations and stores them in a local directory.
-- **Configurable Video Input**: Users can provide a video file path or use a live camera feed.
+- **Media File Input Only**: Users must provide a pre-recorded video file for detection.
 
 ---
 
 ## **Installation Guide**
 ### **System Requirements**
 #### **Client Machine:**
-- **OS:** Linux (Version 1 is Linux-only)
+- **OS:** Linux (Version 1.1 is Linux-only)
 - **Processor:** Intel i3 or higher
 - **RAM:** 4GB (8GB recommended)
 - **Storage:** 20GB free disk space
@@ -30,30 +30,22 @@ CivicEye is an AI-powered software that enables users to detect and monitor traf
    ```bash
    cd CivicEye
    ```
-3. **Install Dependencies:**
+3. **Run the Setup Script:**
    ```bash
-   sudo apt update
-   sudo apt install python3 python3-venv
+   chmod +x setup_civiceye.sh
+   ./setup_civiceye.sh
    ```
-4. **Set Up a Virtual Environment:**
+4. **Run the Software:**
    ```bash
-   python3 -m venv myenv
-   source myenv/bin/activate  # Linux/macOS
-   ```
-5. **Install Required Python Packages:**
-   ```bash
-   pip install cvzone ultralytics opencv-python
-   ```
-6. **Run the Detection Software:**
-   ```bash
-   python3 civiceye.py
+   chmod +x run.sh
+   ./run.sh
    ```
 
 ---
 
 ## **Software Workflow**
 1. **User Setup**:
-   - User provides a video file path or opts for a live camera feed.
+   - User provides a pre-recorded video file path for processing.
 2. **Violation Detection**:
    - YOLOv8 processes video frames and detects violations such as "Without Helmet".
    - Bounding boxes and labels are drawn on detected violations.
@@ -74,15 +66,24 @@ CivicEye is an AI-powered software that enables users to detect and monitor traf
 1. **OpenCV**: Handles video stream processing, frame capture, and image saving.
 2. **YOLOv8 (Ultralytics)**: Performs real-time object detection for helmet violations.
 3. **cvzone**: Used for drawing bounding boxes and labels on detected objects.
-4. **Math & OS**: Handles confidence score calculations and file operations.
 
 ---
 
 ## **Website**
-- **URL:** [CivicEye Website](https://sathwik656.github.io/CivicEye-Website/)
+- **URL:** [CivicEye Website](https://civiceye.my/)
 - **Features:**
   - Displays basic information about the software.
   - Provides installation and usage instructions.
+
+---
+
+## **Version 1.1 Release Notes**
+- **Updated Setup Script**: The setup script now ensures proper installation of dependencies.
+- **Refined Run Script**: A dedicated `run.sh` file for easy execution.
+- **Improved Detection Workflow**: Enhancements in violation tracking and image storage.
+- **Media File Input Only**: Users must provide a recorded video file (no live camera support in this version).
+- **Local Processing**: All detection and processing occur on the client machine.
+- **Basic Website**: Provides installation and usage information.
 
 ---
 
@@ -91,10 +92,10 @@ CivicEye is an AI-powered software that enables users to detect and monitor traf
 2. Expand violation detection to include "Triple Riding" and other infractions.
 3. Optimize the YOLO model for region-specific traffic conditions.
 4. Add integration for live alerts via email/SMS.
+5. Support live camera feeds for real-time monitoring.
 
 ---
 
 ## **Support & Contributions**
-For issues or feature requests, please open a ticket in the [GitHub Issues](https://github.com/shadow2669).
-
+For issues or feature requests, please contact [SHADOW](https://github.com/SHADOW2669).
 
