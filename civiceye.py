@@ -1,66 +1,179 @@
-import cv2  # OpenCV for image processing
-import math  # Math module for calculations
-import cvzone  # Cvzone for easy OpenCV functionalities
-import os  # OS module for file operations
-from ultralytics import YOLO  # YOLO model for object detection
+import cv2
+import threading
+import tkinter as tk
+from tkinter import filedialog, messagebox
+from ultralytics import YOLO  # Object detection model
+from PIL import Image, ImageTk  # For displaying video frames in Tkinter
+import os
+import webbrowser
+import ttkbootstrap as tb  # Themed Tkinter for UI styling
 
-# Ask user for media input
-media_input = input("Enter video file path or press Enter to use the default camera: ").strip()
-if media_input == "":
-    cap = cv2.VideoCapture(0)  # Use default camera
-else:
-    cap = cv2.VideoCapture(media_input)  # Use provided video file
+# Global Variables
+stop_flag = False  # Flag to control video processing loop
+video_source = None  # Path to the selected video file
+frame_position = 0  # Stores the last processed frame position
+logged_in = False  # User login status
 
-# Load YOLO model with custom weights
-model = YOLO("Weights/best.pt")  # Load trained YOLO model
+# Login Function
+def login():
+    """Handles user authentication."""
+    global logged_in
+    username = username_entry.get().strip()
+    password = password_entry.get().strip()
+    
+    if username == "admin" and password == "1234":
+        # Hide login frame and show application frame
+        login_frame.pack_forget()
+        app_frame.pack(fill="both", expand=True)
+        logged_in = True
+    else:
+        messagebox.showwarning("Login Failed", "Invalid Username or Password.")
 
-# Define class names
-classNames = ['With Helmet', 'Without Helmet']  # Labels for detected objects
+# Function to open URLs in the default web browser
+def open_url(url):
+    webbrowser.open_new(url)
 
-# Directory to store detected images
-save_dir = "Detects"
-os.makedirs(save_dir, exist_ok=True)  # Create directory if it doesn't exist
+# Function to run YOLOv8 detection
+def run_detection():
+    """Runs the helmet detection using YOLOv8 on the selected video file."""
+    global stop_flag, video_source, frame_position
+    stop_flag = False  # Ensure the loop runs
+    
+    if not video_source:
+        messagebox.showwarning("Warning", "No video source selected.")
+        return
 
-violating_bikes = {}  # Dictionary to track detected bikes with violations
-frame_count = 0  # Counter to track frames processed
+    # Load the YOLO model
+    model = YOLO("Weights/best.pt")
+    classNames = ['With Helmet', 'Without Helmet']
+    
+    # Open the video file
+    cap = cv2.VideoCapture(video_source)
+    
+    # Create a directory to save detected frames if it doesn't exist
+    save_dir = "Detects"
+    os.makedirs(save_dir, exist_ok=True)
 
-while True:
-    success, img = cap.read()  # Read a frame from the video or camera
-    if not success:
-        break  # Stop processing if video ends or camera fails
+    # Set video to the last frame position (if restarted)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, frame_position)
+    
+    while not stop_flag:
+        success, img = cap.read()
+        if not success:
+            break  # Exit if video ends
+        
+        frame_position = cap.get(cv2.CAP_PROP_POS_FRAMES)  # Update frame position
+        
+        # Perform object detection
+        results = model(img, stream=True)
+        for r in results:
+            for box in r.boxes:
+                x1, y1, x2, y2 = map(int, box.xyxy[0])  # Get bounding box coordinates
+                conf = round(box.conf[0].item(), 2)  # Get confidence score
+                cls = int(box.cls[0])  # Get class ID
 
-    results = model(img, stream=True)  # Perform object detection on the frame
-    detected_violations = False  # Flag to track violations in the frame
+                # Draw bounding box and label on the frame
+                cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                cv2.putText(img, f'{classNames[cls]} {conf}', (x1, y1 - 10), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-    for r in results:
-        boxes = r.boxes  # Extract bounding boxes
-        for box in boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])  # Get bounding box coordinates
-            conf = math.ceil((box.conf[0] * 100)) / 100  # Confidence score rounded to two decimal places
-            cls = int(box.cls[0])  # Class ID of detected object
+                # Save detected frame with bounding box
+                save_path = os.path.join(save_dir, f"frame_{int(frame_position)}.jpg")
+                cv2.imwrite(save_path, img)
+        
+        # Convert frame for Tkinter display
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = Image.fromarray(img)
+        imgtk = ImageTk.PhotoImage(image=img)
+        video_label.imgtk = imgtk
+        video_label.configure(image=imgtk)
+        video_label.update()
+    
+    cap.release()  # Release video resource
 
-            # Draw bounding box and label on the image
-            cvzone.cornerRect(img, (x1, y1, x2 - x1, y2 - y1))  # Draw rectangle
-            cvzone.putTextRect(img, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=1, thickness=1)
+# Function to start detection in a separate thread
+def start_detection(source=None):
+    """Starts helmet detection in a separate thread to keep UI responsive."""
+    global stop_flag, video_source
+    
+    if source:
+        video_source = source  # Set video source
+    
+    if not video_source:
+        messagebox.showwarning("Warning", "Please select a video file.")
+        return
+    
+    stop_flag = False  # Reset stop flag
+    threading.Thread(target=run_detection, daemon=True).start()  # Run detection in a thread
 
-            # Check if detected object is "Without Helmet"
-            if classNames[cls] == "Without Helmet":
-                detected_violations = True  # Set flag to True if violation detected
+# Function to stop detection
+def stop_detection():
+    """Stops the detection loop."""
+    global stop_flag
+    stop_flag = True
 
-    # Save the full image only once per detected violation
-    if detected_violations:
-        img_id = f"violation_{frame_count}.jpg"
-        if img_id not in violating_bikes:  # Ensure image is saved only once per violation
-            filename = os.path.join(save_dir, img_id)
-            cv2.imwrite(filename, img)  # Save image of violation
-            violating_bikes[img_id] = True  # Mark this frame as saved
-            print(f"Saved violation image: {filename}")
+# Initialize Tkinter window
+root = tb.Window(themename="darkly")  # Uses a dark theme for UI
+root.title("Helmet Detection System")
+root.geometry("700x500")
+root.resizable(True, True)
 
-    frame_count += 1  # Increment frame counter
+# Login Frame UI
+login_frame = tb.Frame(root)
+login_frame.pack(fill="both", expand=True)
 
-    cv2.imshow("Image", img)  # Display the frame
-    if cv2.waitKey(1) & 0xFF == ord('q'):  # Exit if 'q' key is pressed
-        break
+tb.Label(login_frame, text="🔒 Secure Login", font=("Arial", 18, "bold"), bootstyle="dark").pack(pady=15)
 
-cap.release()  # Release video capture resource
-cv2.destroyAllWindows()  # Close all OpenCV windows
+# Username Entry
+username_entry = tb.Entry(login_frame, bootstyle="primary", font=("Arial", 12))
+username_entry.pack(pady=5, padx=20, fill="x")
+
+# Password Entry
+password_entry = tb.Entry(login_frame, bootstyle="primary", font=("Arial", 12), show="*")
+password_entry.pack(pady=5, padx=20, fill="x")
+
+# Login Button
+tb.Button(login_frame, text="🚀 LOGIN", bootstyle="success", command=login).pack(pady=15, fill="x", padx=20)
+
+# Forgot Password & Register Buttons
+button_frame = tb.Frame(login_frame)
+button_frame.pack(pady=5, fill="x", padx=20)
+tb.Button(button_frame, text="🔑 Forgot Password", bootstyle="link", command=lambda: open_url("https://sathwik656.github.io/CivicEye-Website/")).pack(side="left", padx=5)
+tb.Button(button_frame, text="📝 Register", bootstyle="secondary-outline", command=lambda: open_url("https://sathwik656.github.io/CivicEye-Website/")).pack(side="right", padx=5)
+
+# Social Media Buttons
+social_frame = tb.Frame(login_frame)
+social_frame.pack(pady=10, fill="x", padx=20)
+tb.Button(social_frame, text="🌐 Website", bootstyle="info", command=lambda: open_url("https://sathwik656.github.io/CivicEye-Website/")).pack(side="left", expand=True, padx=5)
+tb.Button(social_frame, text="🐙 GitHub", bootstyle="dark", command=lambda: open_url("https://github.com/SHADOW2669/CivicEye-testing")).pack(side="left", expand=True, padx=5)
+tb.Button(social_frame, text="✉ Gmail", bootstyle="danger", command=lambda: open_url("mailto:sakshithshetty69@gmail.com")).pack(side="left", expand=True, padx=5)
+
+# Main Application Frame (hidden until login)
+app_frame = tb.Frame(root)
+
+tb.Label(app_frame, text="Helmet Detection System", font=("Arial", 16, "bold"), bootstyle="warning").pack(pady=10)
+
+# Function to browse and select video file
+def browse_file():
+    """Opens a file dialog to select a video file."""
+    file_path = filedialog.askopenfilename(filetypes=[("All Files", "*.*")])
+    if file_path:
+        global frame_position
+        frame_position = 0  # Reset frame position
+        start_detection(file_path)
+
+# File Selection Button
+tb.Button(app_frame, text="📂 Browse File", bootstyle="primary", command=browse_file).pack(pady=10)
+
+# Video Display Frame
+video_frame = tb.Frame(app_frame, bootstyle="secondary", padding=5)
+video_frame.pack(pady=10, fill="both", expand=True)
+video_label = tb.Label(video_frame)
+video_label.pack()
+
+# Start & Stop Buttons
+tb.Button(app_frame, text="▶ Start Detection", bootstyle="success", command=lambda: start_detection(video_source)).pack(pady=10, fill="x", padx=20)
+tb.Button(app_frame, text="■ Stop Detection", bootstyle="danger", command=stop_detection).pack(pady=10, fill="x", padx=20)
+
+# Run the Tkinter main loop
+root.mainloop()
