@@ -27,9 +27,9 @@ CivicEye is an AI-powered software designed to detect and monitor traffic violat
 1. **Download the Latest Release:**
    - Get the Windows installer from the [CivicEye Releases](https://github.com/SHADOW2669/CivicEye/releases).
 2. **Run the Setup Script:**
-   - Double-click `setup_civiceye.bat` to install dependencies and set up the virtual environment.
+   - Double-click `install.bat` to install dependencies and set up the virtual environment.
 3. **Launch the Software:**
-   - Use `run.bat` to start the detection software.
+   - Use `CivicEye.bat` to start the detection software.
 
 ---
 
