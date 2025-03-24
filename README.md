@@ -1,4 +1,4 @@
-# **[CivicEye] (https://civiceye.my/): Traffic Violation Detection Software (Windows)**
+# **[CivicEye](https://civiceye.my/): Traffic Violation Detection Software (Windows)**
 
 ## **Introduction**
 CivicEye is an AI-powered software designed to detect and monitor traffic violations using CCTV cameras. Utilizing YOLOv8 for object detection, it identifies helmet violations in real time and processes them locally on the user's machine.
