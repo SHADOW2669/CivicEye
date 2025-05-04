@@ -1,0 +1,10 @@
+requests
+opencv-python
+ultralytics
+Pillow
+ttkbootstrap
+numpy
+matplotlib
+torch
+torchvision
+torchaudio
